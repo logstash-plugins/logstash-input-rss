@@ -27,6 +27,7 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
   public
   def register
     require "ftw"
+    require "rss"
     @logger.info("Registering RSS Input", :url => @url, :interval => @interval)
     @agent = FTW::Agent.new
   end # def register
@@ -40,14 +41,34 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
       # Pull down the RSS feed using FTW so we can make use of future cache functions
       response = @agent.get!(@url)
       body = ""
-      response.read_body { |c| body << c }
-      # Parse the RSS feed
-
+      response.read_body do |c| 
+        body << c
+      end
       @logger.debug("Body", :body => body)
-      @codec.decode(body) do |event|
-        decorate(event)
-        event["Feed"] = @url
-        queue << event
+      # Parse the RSS feed
+      feed = RSS::Parser.parse(body)
+      feed.items.each do |item|
+        # Put each item into an event
+        case feed.feed_type
+          when 'rss'
+            @codec.decode(item.content.content) do |event|
+              event["Feed"] = @url
+	      event["published"] = item.published.content
+	      event["title"] = item.title.content
+	      event["link"] = item.link.content
+              decorate(event)
+              queue << event
+            end
+	  when 'atom'
+            @codec.decode(item.content.content) do |event|
+              event["Feed"] = @url
+	      event["published"] = item.published.content
+	      event["title"] = item.title.content
+	      event["link"] = item.link.href
+              decorate(event)
+              queue << event
+            end
+        end
       end
       duration = Time.now - start
       @logger.info? && @logger.info("Command completed", :command => @command,
