@@ -7,8 +7,8 @@ require "socket" # for Socket.gethostname
 #
 # Notes:
 #
-# * The '@source' of this event will be the command run.
-# * The '@message' of this event will be the entire stdout of the command
+# * The `@source` of this event will be the command run.
+# * The `@message` of this event will be the entire stdout of the command
 #   as one event.
 #
 class LogStash::Inputs::Rss < LogStash::Inputs::Base
