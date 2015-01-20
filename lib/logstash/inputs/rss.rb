@@ -14,7 +14,6 @@ require "socket" # for Socket.gethostname
 class LogStash::Inputs::Rss < LogStash::Inputs::Base
 
   config_name "rss"
-  milestone 2
 
   default :codec, "plain"
 
