@@ -1,3 +1,7 @@
+## 2.0.3
+ - Fixed bug where `queue` variable was being used but not initialized in `handle_response`.
+   Ref: https://github.com/logstash-plugins/logstash-input-rss/pull/14
+
 ## 2.0.0
  - Plugins were updated to follow the new shutdown semantic, this mainly allows Logstash to instruct input plugins to terminate gracefully, 
    instead of using Thread.raise on the plugins' threads. Ref: https://github.com/elastic/logstash/pull/3895
