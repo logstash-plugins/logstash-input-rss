@@ -40,7 +40,7 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
 
       # Pull down the RSS feed using FTW so we can make use of future cache functions
       response = Faraday.get @url
-      handle_response(response)
+      handle_response(response, queue)
 
       duration = Time.now - start
       @logger.info? && @logger.info("Command completed", :command => @command,
@@ -59,7 +59,7 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
     end # loop
   end
 
-  def handle_response(response)
+  def handle_response(response, queue)
     body = response.body
     # @logger.debug("Body", :body => body)
     # Parse the RSS feed
