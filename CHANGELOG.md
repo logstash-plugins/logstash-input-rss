@@ -1,3 +1,5 @@
+# 2.0.4
+  - New dependency requirements for logstash-core for the 5.0 release
 ## 2.0.3
  - Fixed bug where `queue` variable was being used but not initialized in `handle_response`.
    Ref: https://github.com/logstash-plugins/logstash-input-rss/pull/14
