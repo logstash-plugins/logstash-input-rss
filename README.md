@@ -1,7 +1,6 @@
 # Logstash Plugin
 
-[![Build
-Status](http://build-eu-00.elastic.co/view/LS%20Plugins/view/LS%20Inputs/job/logstash-plugin-input-rss-unit/badge/icon)](http://build-eu-00.elastic.co/view/LS%20Plugins/view/LS%20Inputs/job/logstash-plugin-input-rss-unit/)
+[![Travis Build Status](https://travis-ci.org/logstash-plugins/logstash-input-rss.svg)](https://travis-ci.org/logstash-plugins/logstash-input-rss)
 
 This is a plugin for [Logstash](https://github.com/elastic/logstash).
 
