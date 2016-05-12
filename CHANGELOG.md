@@ -1,7 +1,15 @@
-# 2.0.5
+## 2.0.6
+  - Fixes the case when there is an invalid feed, exceptions are now
+    catched and logged. Fixes https://github.com/logstash-plugins/logstash-input-rss/issues/1
+  - Also add test for normal, valid but empty and invalid feeds use
+    cases.
+
+## 2.0.5
   - Depend on logstash-core-plugin-api instead of logstash-core, removing the need to mass update plugins on major releases of logstash
-# 2.0.4
+
+## 2.0.4
   - New dependency requirements for logstash-core for the 5.0 release
+
 ## 2.0.3
  - Fixed bug where `queue` variable was being used but not initialized in `handle_response`.
    Ref: https://github.com/logstash-plugins/logstash-input-rss/pull/14
