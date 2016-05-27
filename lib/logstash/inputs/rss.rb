@@ -97,9 +97,13 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
       event["updated"] = item.updated.content
       event["title"] = item.title.content
       event["link"] = item.link.href
-      event["author"] = item.author.name.content
+      ##
+      # Author is actually a recommended field, not not a mandatory 
+      # one, see https://validator.w3.org/feed/docs/atom.html for details.
+      ##
+      event["author"] = item.author.name.content if !item.author.nil?
       unless item.published.nil?
-        event["published"] = item.published.content
+        event["published"] = item.published.content if !item.published.nil?
       end
       decorate(event)
       queue << event
