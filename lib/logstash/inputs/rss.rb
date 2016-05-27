@@ -93,13 +93,13 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
       content = item.summary.content
     end
     @codec.decode(content) do |event|
-      event["Feed"] = @url
-      event["updated"] = item.updated.content
-      event["title"] = item.title.content
-      event["link"] = item.link.href
-      event["author"] = item.author.name.content
+      event.set("Feed", @url)
+      event.set("updated", item.updated.content)
+      event.set("title", item.title.content)
+      event.set("link", item.link.href)
+      event.set("author", item.author.name.content)
       unless item.published.nil?
-        event["published"] = item.published.content
+        event("published", item.published.content)
       end
       decorate(event)
       queue << event
@@ -107,11 +107,11 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
   end
   def handle_rss_response(queue, item)
     @codec.decode(item.description) do |event|
-      event["Feed"] = @url
-      event["published"] = item.pubDate
-      event["title"] = item.title
-      event["link"] = item.link
-      event["author"] = item.author
+      event.set("Feed",  @url)
+      event.set("published", item.pubDate)
+      event.set("title", item.title)
+      event.set("link", item.link)
+      event.set("author", item.author)
       decorate(event)
       queue << event
     end
