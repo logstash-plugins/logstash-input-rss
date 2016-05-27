@@ -13,8 +13,7 @@ describe LogStash::Inputs::Rss do
     it_behaves_like "an interruptible input plugin"
   end
 
-  describe "fetching input" do
-
+  shared_examples "fetching data" do |type|
     let(:config) do
       {
         "url" => "http://www.example.com/foo.rss",
@@ -23,7 +22,7 @@ describe LogStash::Inputs::Rss do
     end
 
     let(:sample) do
-      body = File.read(File.join(File.dirname(__FILE__), "..", "fixtures", "sample-feed.xml"))
+      body = File.read(File.join(fixtures_source, "sample-feed.xml"))
       OpenStruct.new(:body => body)
     end
 
@@ -31,24 +30,26 @@ describe LogStash::Inputs::Rss do
       allow(Faraday).to receive(:get).with(config["url"]).and_return(sample)
     end
 
-    let(:data) do
-      plugin = described_class.new(config)
-      plugin_input(plugin) do |queue|
-        sleep 0.1 while queue.empty?
-        events = []
-        queue.size.times { |i| events << queue.pop }
-        events
+    context "when the feed is valid" do
+      let(:data) do
+        plugin = described_class.new(config)
+        plugin_input(plugin) do |queue|
+          sleep 0.1 while queue.empty?
+          events = []
+          queue.size.times { |i| events << queue.pop }
+          events
+        end
       end
-    end
 
-    it "fetchs all items" do
-      expect(data.count).to be > 0
+      it "fetchs all items" do
+        expect(data.count).to be > 0
+      end
     end
 
     context "when the feed is invalid" do
 
       let(:sample) do
-        body = File.read(File.join(File.dirname(__FILE__), "..", "fixtures", "rss-invalid.xml"))
+        body = File.read(File.join(fixtures_source, "invalid-feed.xml"))
         OpenStruct.new(:body => body)
       end
 
@@ -68,11 +69,10 @@ describe LogStash::Inputs::Rss do
       end
     end
 
-       
     context "when the feed is valid, but has zero items" do
 
       let(:sample) do
-        body = File.read(File.join(File.dirname(__FILE__), "..", "fixtures", "rss-zero-feeditems.xml"))
+        body = File.read(File.join(fixtures_source, "zero-items-feed.xml"))
         OpenStruct.new(:body => body)
       end
 
@@ -93,4 +93,15 @@ describe LogStash::Inputs::Rss do
     end
 
   end
+
+  describe "rss feed" do
+    let(:fixtures_source) { File.join(File.dirname(__FILE__), "..", "fixtures", "rss")  }
+    it_behaves_like "fetching data"
+  end
+
+  describe "atom feed" do
+    let(:fixtures_source) { File.join(File.dirname(__FILE__), "..", "fixtures", "atom")  }
+    it_behaves_like "fetching data"
+  end
+
 end
