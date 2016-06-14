@@ -1,3 +1,5 @@
+## 3.0.0
+  - Breaking: Updated plugin to use new Java Event APIs.
 ## 2.0.6
   - Fixes the case when there is an invalid feed, exceptions are now
     catched and logged. Fixes https://github.com/logstash-plugins/logstash-input-rss/issues/1
