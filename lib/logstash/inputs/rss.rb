@@ -61,46 +61,62 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
 
   def handle_response(response, queue)
     body = response.body
-    # @logger.debug("Body", :body => body)
-    # Parse the RSS feed
-    feed = RSS::Parser.parse(body)
-    feed.items.each do |item|
-      # Put each item into an event
-      @logger.debug("Item", :item => item.author)
-      case feed.feed_type
+    begin
+      feed = RSS::Parser.parse(body)
+      feed.items.each do |item|
+        # Put each item into an event
+        @logger.debug("Item", :item => item.author)
+        case feed.feed_type
         when 'rss'
-          @codec.decode(item.description) do |event|
-            event["Feed"] = @url
-            event["published"] = item.pubDate
-            event["title"] = item.title
-            event["link"] = item.link
-            event["author"] = item.author
-            decorate(event)
-            queue << event
-          end
+          handle_rss_response(queue, item)
         when 'atom'
-          if ! item.content.nil?
-            content = item.content.content
-          else
-            content = item.summary.content
-          end
-          @codec.decode(content) do |event|
-            event["Feed"] = @url
-            event["updated"] = item.updated.content
-            event["title"] = item.title.content
-            event["link"] = item.link.href
-            event["author"] = item.author.name.content
-            unless item.published.nil?
-              event["published"] = item.published.content
-            end
-            decorate(event)
-            queue << event
-          end
+          handle_atom_response(queue, item)
+        end
       end
+    rescue RSS::MissingTagError => e
+      @logger.error("Invalid RSS feed", :exception => e)
+    rescue => e
+      @logger.error("Uknown error while parsing the feed", :url => url, :exception => e)
     end
   end
 
   def stop
     Stud.stop!(@run_thread) if @run_thread
+  end
+
+  private
+
+  def handle_atom_response(queue, item)
+    if ! item.content.nil?
+      content = item.content.content
+    else
+      content = item.summary.content
+    end
+    @codec.decode(content) do |event|
+      event.set("Feed", @url)
+      event.set("updated", item.updated.content)
+      event.set("title", item.title.content)
+      event.set("link", item.link.href)
+      ##
+      # Author is actually a recommended field, not not a mandatory 
+      # one, see https://validator.w3.org/feed/docs/atom.html for details.
+      ##
+      event.set("author", item.author.name.content) if !item.author.nil?
+      event.set("published", item.published.content) if !item.published.nil?
+
+      decorate(event)
+      queue << event
+    end
+  end
+  def handle_rss_response(queue, item)
+    @codec.decode(item.description) do |event|
+      event.set("Feed",  @url)
+      event.set("published", item.pubDate)
+      event.set("title", item.title)
+      event.set("link", item.link)
+      event.set("author", item.author)
+      decorate(event)
+      queue << event
+    end
   end
 end # class LogStash::Inputs::Exec
