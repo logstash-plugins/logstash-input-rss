@@ -20,14 +20,7 @@ include::{include_path}/plugin_header.asciidoc[]
 
 ==== Description
 
-Run command line tools and capture the whole output as an event.
-
-Notes:
-
-* The `@source` of this event will be the command run.
-* The `@message` of this event will be the entire stdout of the command
-  as one event.
-
+Reads an RSS feed periodically.
 
 [id="plugins-{type}s-{plugin}-options"]
 ==== Rss Input Configuration Options
@@ -53,7 +46,7 @@ input plugins.
   * Value type is <<number,number>>
   * There is no default value for this setting.
 
-Interval to run the command. Value is in seconds.
+Interval to read the RSS feed. Value is in seconds.
 
 [id="plugins-{type}s-{plugin}-url"]
 ===== `url` 
