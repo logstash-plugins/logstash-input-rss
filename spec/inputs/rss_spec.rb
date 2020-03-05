@@ -1,5 +1,6 @@
 # encoding: utf-8
 require "logstash/devutils/rspec/spec_helper"
+require "logstash/devutils/rspec/shared_examples"
 require "logstash/inputs/rss"
 require 'ostruct'
 
@@ -102,6 +103,22 @@ describe LogStash::Inputs::Rss do
   describe "atom feed" do
     let(:fixtures_source) { File.join(File.dirname(__FILE__), "..", "fixtures", "atom")  }
     it_behaves_like "fetching data"
+  end
+
+  private
+
+  # reinvented - has been deprecated in devutils 2.0
+  def plugin_input(plugin, &block)
+    queue = Queue.new
+
+    input_thread = Thread.new do
+      plugin.run(queue)
+    end
+    result = block.call(queue)
+
+    plugin.do_stop
+    input_thread.join
+    result
   end
 
 end
