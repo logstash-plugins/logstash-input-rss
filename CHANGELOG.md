@@ -1,6 +1,6 @@
 ## 3.0.6
   - Fix processing when item.author is not present
-  - Explicitly depend on rss gem for JRuby versions that don't include it
+  - Explicitly depend on rss gem for JRuby versions that don't include it [#35](https://github.com/logstash-plugins/logstash-input-rss/pull/35)
 
 ## 3.0.5
   - Docs: Set the default_codec doc attribute.
