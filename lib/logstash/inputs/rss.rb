@@ -65,7 +65,6 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
       feed = RSS::Parser.parse(body)
       feed.items.each do |item|
         # Put each item into an event
-        @logger.debug("Item", :item => item.author)
         case feed.feed_type
         when 'rss'
           handle_rss_response(queue, item)
@@ -114,7 +113,7 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
       event.set("published", item.pubDate)
       event.set("title", item.title)
       event.set("link", item.link)
-      event.set("author", item.author)
+      event.set("author", item.author) if !item.author.nil?
       decorate(event)
       queue << event
     end
