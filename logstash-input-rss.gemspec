@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 
   s.name            = 'logstash-input-rss'
-  s.version         = '3.0.5'
+  s.version         = '3.0.6'
   s.licenses        = ['Apache License (2.0)']
   s.summary         = "Captures the output of command line tools as an event"
   s.description     = "This gem is a Logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/logstash-plugin install gemname. This gem is not a stand-alone program"
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'addressable'
   s.add_runtime_dependency 'faraday'
   s.add_runtime_dependency 'stud', "~> 0.0.22"
+  s.add_runtime_dependency 'rss'
 
   s.add_development_dependency 'logstash-devutils'
 end
