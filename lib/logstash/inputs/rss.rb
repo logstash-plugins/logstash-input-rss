@@ -75,7 +75,7 @@ class LogStash::Inputs::Rss < LogStash::Inputs::Base
     rescue RSS::MissingTagError => e
       @logger.error("Invalid RSS feed", :exception => e)
     rescue => e
-      @logger.error("Uknown error while parsing the feed", :url => url, :exception => e)
+      @logger.error("Unknown error while parsing the feed", :url => url, :exception => e)
     end
   end
 
